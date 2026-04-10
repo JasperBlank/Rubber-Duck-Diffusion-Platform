@@ -1,0 +1,149 @@
+:root {
+  --cover-bg: #06090d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--cover-bg);
+}
+
+body {
+  position: relative;
+  font-family: Consolas, "Courier New", monospace;
+}
+
+#aurora-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  background: #04070c;
+}
+
+.cover-stage {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.duck-avatar {
+  position: absolute;
+  left: 50%;
+  top: 57%;
+  width: min(42vw, 460px);
+  min-width: 260px;
+  aspect-ratio: 7 / 6;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 28px 38px rgba(0, 0, 0, 0.45));
+  animation: bob 3.4s ease-in-out infinite;
+}
+
+.duck-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  width: 60%;
+  height: 11.111%;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.34);
+}
+
+.duck-body {
+  position: absolute;
+  left: 50%;
+  bottom: 15.556%;
+  width: 62.857%;
+  height: 50%;
+  transform: translateX(-50%);
+  border-radius: 58% 52% 46% 48%;
+  background: linear-gradient(180deg, #ffd95e 0%, #f4b447 100%);
+}
+
+.duck-body::after {
+  content: "";
+  position: absolute;
+  right: 7.576%;
+  bottom: 17.778%;
+  width: 31.818%;
+  height: 33.333%;
+  border-radius: 60% 50% 70% 40%;
+  background: rgba(255, 241, 186, 0.24);
+}
+
+.duck-wing {
+  position: absolute;
+  left: 18.182%;
+  top: 37.778%;
+  width: 39.394%;
+  height: 37.778%;
+  border-radius: 58% 42% 60% 40%;
+  background: rgba(255, 241, 186, 0.24);
+}
+
+.duck-head {
+  position: absolute;
+  right: 7.576%;
+  top: -37.778%;
+  width: 63.636%;
+  height: 93.333%;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff0a5 0%, #ffd158 100%);
+}
+
+.duck-eye {
+  position: absolute;
+  width: 11.905%;
+  height: 11.905%;
+  top: 35.714%;
+  border-radius: 50%;
+  background: #141815;
+}
+
+.duck-eye.left {
+  left: 26.19%;
+}
+
+.duck-eye.right {
+  right: 26.19%;
+}
+
+.duck-beak {
+  position: absolute;
+  left: 50%;
+  bottom: 19.048%;
+  width: 50%;
+  height: 19.048%;
+  border-radius: 12px 12px 14px 14px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #ff944d 0%, #eb6a33 100%);
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translate(-50%, -50%);
+  }
+
+  50% {
+    transform: translate(-50%, calc(-50% - 10px));
+  }
+}
+
+@media (max-width: 900px) {
+  .duck-avatar {
+    width: min(64vw, 430px);
+    top: 60%;
+  }
+}
