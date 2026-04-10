@@ -84,6 +84,37 @@ GEMINI_FALLBACK_MODELS=gemini-2.5-flash-lite,gemini-2.0-flash-lite
 
 The app already reads Koyeb's `PORT` environment variable automatically and binds to `0.0.0.0`, so no extra start command is required.
 
+## GitHub Pages deploy
+
+If you do not want a live backend, the repo also includes a fully static GitHub Pages version in [docs](C:/Users/jjbla/OneDrive/Documents/Playground/rubber_duck_escalation/docs).
+
+Important limitation:
+
+- GitHub Pages cannot safely use your Gemini API key.
+- The Pages build runs in static browser-local mode only.
+- That means the app still works, but all questions are generated locally from the built-in escalation templates.
+
+To publish it:
+
+1. Go to the GitHub repository settings.
+2. Open `Pages`.
+3. Set source to `Deploy from a branch`.
+4. Choose branch `main`.
+5. Choose folder `/docs`.
+6. Save.
+
+Your site URL should then be:
+
+```text
+https://jasperblank.github.io/Rubber-Duck-Diffision-Platform/
+```
+
+The cover scene will be available at:
+
+```text
+https://jasperblank.github.io/Rubber-Duck-Diffision-Platform/cover.html
+```
+
 ## Escalation ladder
 
 - Level 1: Existential

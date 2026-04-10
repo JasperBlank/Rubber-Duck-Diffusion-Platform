@@ -4,6 +4,7 @@ const state = {
   started: false,
   complete: false,
   pending: false,
+  backendAvailable: true,
   bug: "",
   currentQuestion: "",
   history: [],
@@ -12,6 +13,58 @@ const state = {
   geminiConfigured: false,
   responseMode: "fast",
 };
+
+const STATIC_STAGES = [
+  {
+    level: 1,
+    name: "Existential",
+    subtitle: "Operational Doubt",
+    sample: "When you say it 'doesn't work', what does working even mean to you?",
+    mood: "The duck treats implementation details as soft claims about reality.",
+    mode: "question",
+  },
+  {
+    level: 2,
+    name: "Philosophical",
+    subtitle: "Meaning Negotiation",
+    sample: "If the system behaves consistently against your intentions, which one of you is actually being unreasonable?",
+    mood: "The duck now suspects the bug may be a disagreement about meaning itself.",
+    mode: "question",
+  },
+  {
+    level: 3,
+    name: "Therapeutic",
+    subtitle: "Problem Relationship Review",
+    sample: "Tell me about your relationship with your problem. Do you feel safe here?",
+    mood: "The duck speaks softly and assumes the issue has crossed into attachment territory.",
+    mode: "question",
+  },
+  {
+    level: 4,
+    name: "Cosmic",
+    subtitle: "Universal Systems",
+    sample:
+      "Your NullPointerException is a reflection of a universe that assigns meaning arbitrarily. Have you considered that the pointer was never yours to begin with?",
+    mood: "The duck has left engineering behind and now negotiates with the universe itself.",
+    mode: "question",
+  },
+  {
+    level: 5,
+    name: "Transcendent",
+    subtitle: "Post-Cosmic Compliance",
+    sample: "At what point does a persistent issue stop being a defect and start becoming part of the climate?",
+    mood: "The duck no longer distinguishes between software behavior and atmospheric conditions.",
+    mode: "question",
+  },
+  {
+    level: 6,
+    name: "Session Closure",
+    subtitle: "Managed Acceptance",
+    sample: "You seem ready to move on. The bug has not changed. But you have. That's enough.",
+    mood: "The duck closes the ticket and opens a space for personal growth metrics.",
+    mode: "closure",
+  },
+];
 
 const chat = document.querySelector("#chat");
 const ladder = document.querySelector("#ladder");
@@ -32,6 +85,7 @@ const submitButton = document.querySelector("#submit-btn");
 const resetButton = document.querySelector("#reset-btn");
 const template = document.querySelector("#message-template");
 const summaryTemplate = document.querySelector("#summary-template");
+const scriptBaseUrl = new URL("./", document.currentScript ? document.currentScript.src : window.location.href);
 
 const auroraState = {
   alphaFrom: 0,
@@ -51,8 +105,8 @@ const AURORA_ALPHA_BY_LEVEL = {
 };
 
 const AURORA_PLAYLIST = [
-  "/static/media/aurora-forward.webm",
-  "/static/media/aurora-reverse.webm",
+  new URL("./media/aurora-forward.webm", scriptBaseUrl).toString(),
+  new URL("./media/aurora-reverse.webm", scriptBaseUrl).toString(),
 ];
 
 const OPENING_SUGGESTIONS = [
@@ -96,6 +150,168 @@ function getAuroraAlpha() {
     return 0;
   }
   return AURORA_ALPHA_BY_LEVEL[state.level] ?? 0;
+}
+
+function compactText(text, limit = 180) {
+  const collapsed = String(text || "").trim().split(/\s+/).join(" ");
+  if (collapsed.length <= limit) {
+    return collapsed;
+  }
+  return `${collapsed.slice(0, limit - 3).trimEnd()}...`;
+}
+
+function summarizeHistory(history) {
+  if (!Array.isArray(history) || history.length === 0) {
+    return "No previous reflection rounds.";
+  }
+
+  return history
+    .map((item) => {
+      return `Level ${item.level} question: ${item.question} | User answer: ${item.answer || "[no answer]"}`;
+    })
+    .join("\n");
+}
+
+function chooseDeterministicOption(seedInput, options) {
+  const seed = Array.from(seedInput).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return options[Math.abs(seed) % options.length];
+}
+
+function buildFallbackQuestion(bug, stage, latestAnswer, history) {
+  const issue = compactText(bug, 95);
+  const answer = latestAnswer ? compactText(latestAnswer, 80) : "";
+  const seedInput = `${bug}|${latestAnswer}|${stage.level}|${history.length}`;
+  let options = [];
+
+  if (stage.level === 1) {
+    options = [
+      `When you say "${issue}" fails, what would "working" actually look like in a less disappointing universe?`,
+      `Is "${issue}" broken, or is it merely refusing the story you hoped to tell about it?`,
+      `What exact reality are you expecting from "${issue}", and what reality keeps happening instead?`,
+    ];
+  } else if (stage.level === 2) {
+    options = [
+      `If "${issue}" behaves consistently against your wishes, which one of you is actually failing to communicate?`,
+      `You said "${answer || issue}"; is that a symptom, or just the name you have given to repeated disappointment?`,
+      `At what point does "${issue}" stop being an error and start becoming an argument about meaning?`,
+    ];
+  } else if (stage.level === 3) {
+    options = [
+      `When "${answer || issue}" happens, what does it bring up in your relationship with this problem, and do you feel safe here?`,
+      `How would you describe your emotional arrangement with "${issue}": conflict, dependence, or reluctant familiarity?`,
+      `If this problem could describe the dynamic between you, would it say you are fixing it or simply staying together?`,
+    ];
+  } else if (stage.level === 4) {
+    options = [
+      `If "${issue}" persists across your intentions, have you considered that the universe may simply prefer this version of events?`,
+      `What if "${answer || issue}" is not malfunction but a cosmological refusal to validate your assumptions?`,
+      `If the system denies your expectation with perfect calm, why assume the error belongs to the machine?`,
+    ];
+  } else if (stage.level === 5) {
+    options = [
+      `At what point does "${issue}" stop being a defect and start becoming the climate in which your expectations now live?`,
+      `If "${answer || issue}" outlives your attempts to define it, are you still debugging it, or merely witnessing its weather?`,
+      `What remains of a bug once it has become larger than the system that first named it?`,
+    ];
+  }
+
+  return chooseDeterministicOption(seedInput, options);
+}
+
+function buildClosure() {
+  return "The original incident is now a smaller detail inside a much larger process. The bug has not changed. But you have. That is enough for RDEP to classify this session as resolved.";
+}
+
+function buildSummary(bug, history, latestAnswer) {
+  const combinedAnswers = `${history.map((item) => item.answer || "").join(" ")} ${latestAnswer || ""}`.trim();
+  const totalWords = combinedAnswers ? combinedAnswers.split(/\s+/).length : 0;
+  let clarity = "moderate";
+
+  if (totalWords >= 45) {
+    clarity = "concerningly high";
+  } else if (totalWords >= 20) {
+    clarity = "elevated";
+  }
+
+  const estimatedMinutes = Math.max(4, history.length * 2 + Math.max(1, Math.floor(totalWords / 20)));
+  const driftOptions = [
+    "duck-led introspection",
+    "ceremonial overanalysis",
+    "managed perspective realignment",
+    "enterprise-grade emotional recursion",
+  ];
+  const driftSeed = Array.from(bug).reduce((sum, char) => sum + char.charCodeAt(0), 0) + totalWords;
+  const drift = driftOptions[Math.abs(driftSeed) % driftOptions.length];
+
+  return {
+    bugsSolved: 0,
+    existentialClarity: clarity,
+    timeWastedProductively: `${estimatedMinutes} minutes`,
+    rootCauseStatus: "emotionally reframed",
+    issueDisplacementVector: drift,
+    transcendenceLevel: "acceptable for enterprise use",
+  };
+}
+
+function getSourceLabel(source) {
+  if (source === "gemini") {
+    return "Google AI";
+  }
+  if (source === "static") {
+    return "browser-local";
+  }
+  if (source === "template") {
+    return "local engine";
+  }
+  return "fallback";
+}
+
+function startStaticSession(bug) {
+  const issue = compactText(bug, 320);
+  const stage = getStage(1) || STATIC_STAGES[0];
+  return {
+    ok: true,
+    kind: "question",
+    level: stage.level,
+    stage,
+    message: buildFallbackQuestion(issue, stage, "", []),
+    source: "static",
+    model: "browser-local",
+    note: "Static deployment mode is active. Questions are generated locally in the browser.",
+  };
+}
+
+function continueStaticSession(bug, level, answer, history) {
+  const issue = compactText(bug, 320);
+  const latestAnswer = compactText(answer, 260);
+  const turns = Array.isArray(history) ? history.slice(-6) : [];
+
+  if (level >= STATIC_STAGES.length - 1) {
+    const stage = getStage(STATIC_STAGES.length) || STATIC_STAGES[STATIC_STAGES.length - 1];
+    return {
+      ok: true,
+      kind: "complete",
+      level: stage.level,
+      stage,
+      message: buildClosure(),
+      source: "static",
+      model: "browser-local",
+      note: "Static deployment mode is active. Closure is generated locally in the browser.",
+      summary: buildSummary(issue, turns, latestAnswer),
+    };
+  }
+
+  const nextStage = getStage(level + 1) || STATIC_STAGES[level];
+  return {
+    ok: true,
+    kind: "question",
+    level: nextStage.level,
+    stage: nextStage,
+    message: buildFallbackQuestion(issue, nextStage, latestAnswer, turns),
+    source: "static",
+    model: "browser-local",
+    note: "Static deployment mode is active. Questions are generated locally in the browser.",
+  };
 }
 
 function cubicSplineEase(t) {
@@ -226,6 +442,12 @@ function updateStageChrome() {
 }
 
 function setModelStatus() {
+  if (!state.backendAvailable) {
+    modelStatus.textContent = "Static mode active; no live AI backend";
+    modelStatus.classList.remove("warning");
+    return;
+  }
+
   if (state.responseMode === "gemini" && state.geminiConfigured) {
     modelStatus.textContent = `Google AI live via ${state.model}`;
     modelStatus.classList.remove("warning");
@@ -331,6 +553,8 @@ function addOnboarding() {
 function setSourceStatus(source, note) {
   if (source === "gemini") {
     sourceStatus.textContent = "Dynamic questioning via Google AI";
+  } else if (source === "static") {
+    sourceStatus.textContent = "Browser-local questioning engine";
   } else if (source === "template") {
     sourceStatus.textContent = "Fast local questioning engine";
   } else {
@@ -374,51 +598,61 @@ async function startSession(bug) {
     "Classifying incident severity and locating an appropriately qualified duck."
   );
 
-  const response = await fetch("/api/escalate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "start",
-      bug,
-    }),
-  });
-  const data = await response.json();
-  if (!response.ok || !data.ok) {
-    throw new Error(data.error || "Failed to start session");
+  let data;
+  if (!state.backendAvailable) {
+    data = startStaticSession(bug);
+  } else {
+    const response = await fetch("/api/escalate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "start",
+        bug,
+      }),
+    });
+    data = await response.json();
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || "Failed to start session");
+    }
   }
 
   state.started = true;
   state.level = data.level;
   state.currentQuestion = data.message;
+  state.model = data.model || state.model;
   setSourceStatus(data.source, data.note);
   resolvePending(
     pending,
-    `Level ${data.level} - ${data.stage.name} via ${data.source === "gemini" ? "Google AI" : "fallback"}`,
+    `Level ${data.level} - ${data.stage.name} via ${getSourceLabel(data.source)}`,
     data.message,
     data.note
   );
 }
 
 async function continueSession(answer) {
-  const currentStage = getStage(state.level);
   const pending = beginPendingMessage(
     `Reviewing your response for Level ${state.level} and preparing a less helpful follow-up.`
   );
 
-  const response = await fetch("/api/escalate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "continue",
-      bug: state.bug,
-      answer,
-      level: state.level,
-      history: state.history,
-    }),
-  });
-  const data = await response.json();
-  if (!response.ok || !data.ok) {
-    throw new Error(data.error || "Failed to continue session");
+  let data;
+  if (!state.backendAvailable) {
+    data = continueStaticSession(state.bug, state.level, answer, state.history);
+  } else {
+    const response = await fetch("/api/escalate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "continue",
+        bug: state.bug,
+        answer,
+        level: state.level,
+        history: state.history,
+      }),
+    });
+    data = await response.json();
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || "Failed to continue session");
+    }
   }
 
   state.history.push({
@@ -430,11 +664,12 @@ async function continueSession(answer) {
   state.level = data.level;
   state.currentQuestion = data.kind === "question" ? data.message : "";
   state.complete = data.kind === "complete";
+  state.model = data.model || state.model;
   setSourceStatus(data.source, data.note);
 
   resolvePending(
     pending,
-    `${data.stage.name} via ${data.source === "gemini" ? "Google AI" : "fallback"}`,
+    `${data.stage.name} via ${getSourceLabel(data.source)}`,
     data.message,
     data.note
   );
@@ -520,13 +755,26 @@ resetButton.addEventListener("click", () => {
 });
 
 async function boot() {
-  const response = await fetch("/api/health");
-  const data = await response.json();
-  state.stages = data.stages || [];
-  state.model = data.model || "unknown";
-  state.version = data.version || "Rubber Duck Diffision Platform v4.1.8";
-  state.geminiConfigured = Boolean(data.geminiConfigured);
-  state.responseMode = data.responseMode || "fast";
+  try {
+    const response = await fetch("/api/health");
+    if (!response.ok) {
+      throw new Error(`Health endpoint returned ${response.status}`);
+    }
+    const data = await response.json();
+    state.backendAvailable = true;
+    state.stages = data.stages || [];
+    state.model = data.model || "unknown";
+    state.version = data.version || "Rubber Duck Diffision Platform v4.1.8";
+    state.geminiConfigured = Boolean(data.geminiConfigured);
+    state.responseMode = data.responseMode || "fast";
+  } catch (_error) {
+    state.backendAvailable = false;
+    state.stages = STATIC_STAGES;
+    state.model = "browser-local";
+    state.version = "Rubber Duck Diffision Platform v4.1.8";
+    state.geminiConfigured = false;
+    state.responseMode = "static";
+  }
 
   renderLadder();
   updateStageChrome();
