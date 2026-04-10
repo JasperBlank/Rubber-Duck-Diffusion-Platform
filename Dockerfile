@@ -7,4 +7,6 @@ COPY . .
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8000
 
+EXPOSE ${PORT}
+
 CMD ["python", "app.py"]
