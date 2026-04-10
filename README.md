@@ -1,4 +1,4 @@
-# Rubber Duck Diffision Platform
+# Rubber Duck Diffusion Platform
 
 Retro-serious local web app for the DEV April Fools Challenge.
 
@@ -106,13 +106,13 @@ To publish it:
 Your site URL should then be:
 
 ```text
-https://jasperblank.github.io/Rubber-Duck-Diffision-Platform/
+https://jasperblank.github.io/Rubber-Duck-Diffusion-Platform/
 ```
 
 The cover scene will be available at:
 
 ```text
-https://jasperblank.github.io/Rubber-Duck-Diffision-Platform/cover.html
+https://jasperblank.github.io/Rubber-Duck-Diffusion-Platform/cover.html
 ```
 
 ## Escalation ladder

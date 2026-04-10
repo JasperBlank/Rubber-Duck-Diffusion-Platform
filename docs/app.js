@@ -9,7 +9,7 @@ const state = {
   currentQuestion: "",
   history: [],
   model: "unknown",
-  version: "Rubber Duck Diffision Platform v4.1.8",
+  version: "Rubber Duck Diffusion Platform v4.1.8",
   geminiConfigured: false,
   responseMode: "fast",
 };
@@ -546,7 +546,7 @@ function addOnboarding() {
     tone: "system",
     meta: "Platform onboarding",
     body:
-      "Welcome to Rubber Duck Diffision Platform v4.1.8. Describe one bug, answer one question at a time, and allow the platform to transform a technical issue into a broader inquiry about intention, attachment, and managed acceptance.",
+      "Welcome to Rubber Duck Diffusion Platform v4.1.8. Describe one bug, answer one question at a time, and allow the platform to transform a technical issue into a broader inquiry about intention, attachment, and managed acceptance.",
   });
 }
 
@@ -764,14 +764,14 @@ async function boot() {
     state.backendAvailable = true;
     state.stages = data.stages || [];
     state.model = data.model || "unknown";
-    state.version = data.version || "Rubber Duck Diffision Platform v4.1.8";
+    state.version = data.version || "Rubber Duck Diffusion Platform v4.1.8";
     state.geminiConfigured = Boolean(data.geminiConfigured);
     state.responseMode = data.responseMode || "fast";
   } catch (_error) {
     state.backendAvailable = false;
     state.stages = STATIC_STAGES;
     state.model = "browser-local";
-    state.version = "Rubber Duck Diffision Platform v4.1.8";
+    state.version = "Rubber Duck Diffusion Platform v4.1.8";
     state.geminiConfigured = false;
     state.responseMode = "static";
   }

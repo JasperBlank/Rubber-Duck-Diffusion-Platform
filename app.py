@@ -20,7 +20,7 @@ DEFAULT_FALLBACK_MODELS = (
     "gemini-2.0-flash-lite",
 )
 DEFAULT_PORT = 8765
-APP_VERSION = "Rubber Duck Diffision Platform v4.1.8"
+APP_VERSION = "Rubber Duck Diffusion Platform v4.1.8"
 
 STAGES = [
     {
@@ -277,7 +277,7 @@ class DuckBrain:
 
     def _question_system_prompt(self, stage: dict[str, Any]) -> str:
         return (
-            f"You are Rubber Duck Diffision Platform v4.1.8, a retro-serious debugging interface. "
+            f"You are Rubber Duck Diffusion Platform v4.1.8, a retro-serious debugging interface. "
             f"Current escalation level: {stage['level']} - {stage['name']} ({stage['subtitle']}). "
             f"Behavior instruction: {stage['prompt_style']} "
             "Ask exactly one question. Reference the specific bug or the latest answer. "
@@ -331,7 +331,7 @@ class DuckBrain:
             headers={
                 "Content-Type": "application/json",
                 "x-goog-api-key": self.api_key,
-                "x-goog-api-client": "rubber-duck-diffision-platform/0.3",
+                "x-goog-api-client": "rubber-duck-diffusion-platform/0.3",
             },
             method="POST",
         )
