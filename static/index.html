@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rubber Duck Diffision Platform v4.1.8</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="aurora-video-shell" aria-hidden="true">
+      <video
+        id="aurora-video"
+        class="aurora-video"
+        muted
+        playsinline
+        preload="auto"
+      ></video>
+      <video class="aurora-video-preload" muted playsinline preload="auto" src="/static/media/aurora-forward.webm"></video>
+      <video class="aurora-video-preload" muted playsinline preload="auto" src="/static/media/aurora-reverse.webm"></video>
+    </div>
+    <main class="app-shell">
+      <header class="masthead panel">
+        <div class="window-bar">
+          <span class="window-leds">
+            <i></i>
+            <i></i>
+            <i></i>
+          </span>
+          <span class="window-title">Rubber Duck Diffision Platform v4.1.8</span>
+          <span id="session-state" class="window-state">Awaiting incident intake</span>
+        </div>
+        <div class="masthead-body">
+          <p class="eyebrow">AI-Powered Guided Self-Discovery For Debugging Contexts</p>
+          <h1>Rubber Duck Diffision Platform</h1>
+          <p class="lede">
+            Describe a bug. Answer one question. Receive a deeper, stranger question in return.
+            Continue until the issue dissolves into managed introspection and the platform
+            congratulates you for solving almost nothing.
+          </p>
+          <div class="status-row">
+            <span id="model-status" class="pill">Checking model status...</span>
+            <span class="pill subtle">Bugs solved by design: 0</span>
+            <span class="pill subtle">Escalation target: enlightenment</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <aside class="panel side-panel">
+          <section class="duck-card">
+            <p class="card-label">Active Waterfowl Interface</p>
+            <div id="duck-avatar" class="duck-avatar" data-level="0" aria-hidden="true">
+              <div class="duck-shadow"></div>
+              <div class="duck-body">
+                <div class="duck-wing"></div>
+                <div class="duck-head">
+                  <span class="duck-eye left"></span>
+                  <span class="duck-eye right"></span>
+                  <span class="duck-beak"></span>
+                </div>
+              </div>
+            </div>
+            <p id="duck-mood" class="duck-mood">
+              The duck is resting in a pre-escalation state and awaiting a manageable technical crisis.
+            </p>
+          </section>
+
+          <section class="progress-card">
+            <div class="progress-header">
+              <div>
+                <p class="card-label">Progress To Enlightenment</p>
+                <h2 id="current-stage-name">Intake Queue</h2>
+              </div>
+            </div>
+            <div class="meter-track">
+              <div id="meter-fill" class="meter-fill"></div>
+            </div>
+            <ol id="ladder" class="ladder"></ol>
+          </section>
+        </aside>
+
+        <section class="panel console-panel">
+          <div class="console-header">
+            <span>Enterprise Reflection Console</span>
+            <span id="source-status">Duck network on standby</span>
+          </div>
+
+          <div id="chat" class="chat" aria-live="polite"></div>
+
+          <form id="composer" class="composer">
+            <label id="composer-label" class="composer-label" for="message">
+              Describe the bug you have definitely not overthought yet
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              placeholder="Example: Users are redirected back to /login after successful authentication."
+            ></textarea>
+            <section class="suggestions" aria-label="Suggested prompts">
+              <div class="suggestions-header">
+                <span id="suggestions-label" class="card-label">Suggested starting problems</span>
+                <span class="suggestions-hint">Click to fill the textbox</span>
+              </div>
+              <div id="suggestions-list" class="suggestions-list"></div>
+            </section>
+            <div class="composer-actions">
+              <button id="reset-btn" class="button ghost" type="button">Reset Session</button>
+              <button id="submit-btn" class="button primary" type="submit">Begin Session</button>
+            </div>
+          </form>
+        </section>
+      </section>
+    </main>
+
+    <template id="message-template">
+      <article class="message">
+        <div class="message-meta"></div>
+        <p class="message-body"></p>
+      </article>
+    </template>
+
+    <template id="summary-template">
+      <section class="summary in-chat">
+        <p class="card-label">Session Summary</p>
+        <h3>Managed Resolution Metrics</h3>
+        <div class="summary-grid">
+          <div class="summary-stat">
+            <span class="summary-key">Bugs solved</span>
+            <strong data-summary="bugsSolved">0</strong>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-key">Existential clarity gained</span>
+            <strong data-summary="existentialClarity">moderate</strong>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-key">Time wasted productively</span>
+            <strong data-summary="timeWastedProductively">0 minutes</strong>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-key">Root cause status</span>
+            <strong data-summary="rootCauseStatus">emotionally reframed</strong>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-key">Issue displacement vector</span>
+            <strong data-summary="issueDisplacementVector">ceremonial overanalysis</strong>
+          </div>
+          <div class="summary-stat">
+            <span class="summary-key">Transcendence level</span>
+            <strong data-summary="transcendenceLevel">acceptable for enterprise use</strong>
+          </div>
+        </div>
+      </section>
+    </template>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>
