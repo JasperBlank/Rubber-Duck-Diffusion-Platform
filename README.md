@@ -43,10 +43,21 @@ $env:RDEP_RESPONSE_MODE="gemini"
 python rubber_duck_escalation/app.py
 ```
 
+Default live model target is now `gemini-3.1-flash-lite`, with automatic fallback to:
+
+- `gemini-2.5-flash-lite`
+- `gemini-2.0-flash-lite`
+
 Optional model override:
 
 ```powershell
-$env:GEMINI_MODEL="gemini-2.5-flash"
+$env:GEMINI_MODEL="gemini-3.1-flash-lite"
+```
+
+Optional fallback override:
+
+```powershell
+$env:GEMINI_FALLBACK_MODELS="gemini-2.5-flash-lite,gemini-2.0-flash-lite"
 ```
 
 Optional port override:
@@ -54,6 +65,24 @@ Optional port override:
 ```powershell
 $env:RUBBER_DUCK_PORT="9000"
 ```
+
+## Koyeb deploy
+
+This repo now includes a [Dockerfile](C:/Users/jjbla/OneDrive/Documents/Playground/rubber_duck_escalation/Dockerfile), so the simplest Koyeb setup is:
+
+1. Connect the GitHub repo to Koyeb.
+2. Deploy from the repository root.
+3. Let Koyeb build from the Dockerfile.
+4. Set these environment variables in Koyeb:
+
+```text
+GEMINI_API_KEY=your-key
+RDEP_RESPONSE_MODE=gemini
+GEMINI_MODEL=gemini-3.1-flash-lite
+GEMINI_FALLBACK_MODELS=gemini-2.5-flash-lite,gemini-2.0-flash-lite
+```
+
+The app already reads Koyeb's `PORT` environment variable automatically and binds to `0.0.0.0`, so no extra start command is required.
 
 ## Escalation ladder
 
